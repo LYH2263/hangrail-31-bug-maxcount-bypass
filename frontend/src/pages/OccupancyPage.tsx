@@ -19,7 +19,7 @@ export default function OccupancyPage() {
       <div className="ruler-wrap" key={m.rail_id}>
         <div className="ruler-label">
           <span>{m.label}</span>
-          <span className="mono">{countCaption(m.active_count, m.segments.length, m.max_active_items)} · 0 — {m.length_cm} cm</span>
+          <span className="mono">{countCaption(m.active_count, m.max_active_items)} · 0 — {m.length_cm} cm</span>
         </div>
         <div className="ruler">
           {m.segments.map((s, i) => (

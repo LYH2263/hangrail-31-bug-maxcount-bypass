@@ -49,7 +49,7 @@ export default function RailsPage() {
         <td>{r.label}</td>
         <td>{r.store_id}</td>
         <td className="mono">{r.length_cm}</td>
-        <td className="mono">{Math.max(0, r.active_count)} / {r.max_active_items ?? "不限"}（段数另计）</td>
+        <td className="mono">{Math.max(0, r.active_count)} / {r.max_active_items ?? "不限"}</td>
         <td>
           <input
             style={{ width: "6rem" }}
