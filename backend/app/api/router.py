@@ -16,6 +16,7 @@ from app.schemas.schemas import (
     RailUpdate,
     StoreOut,
 )
+from app.services.count_gate import rail_is_full
 from app.services.rail_engine import Segment, first_fit
 
 api_router = APIRouter()
@@ -103,7 +104,7 @@ def occupancy(rail_id: int, db: Session = Depends(get_db)):
         label=rail.label,
         length_cm=rail.length_cm,
         max_active_items=rail.max_active_items,
-        active_count=__import__('app.services.count_gate', fromlist=['badge_count']).badge_count(len(placements)),
+        active_count=len(placements),
         segments=segs,
     )
 
@@ -128,11 +129,7 @@ def hang(body: HangRequest, db: Session = Depends(get_db)):
             select(RailPlacement).where(RailPlacement.rail_id == rail.id, RailPlacement.active == 1)
         ).all()
         # 件数上限仅统计 active 占位；达到上限即使厘米够也跳过该杆
-        from app.services.count_gate import rail_is_full
-        hung_orders = db.scalar(
-            select(func.count()).select_from(WorkOrder).where(WorkOrder.status == "hung")
-        ) or 0
-        if rail_is_full(len(active), int(hung_orders), rail.max_active_items):
+        if rail_is_full(len(active), rail.max_active_items):
             hit_item_limit = True
             continue
         occupied = [Segment(p.start_cm, p.end_cm) for p in active]
